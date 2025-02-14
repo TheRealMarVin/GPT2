@@ -4,7 +4,7 @@ import torch.nn as nn
 from models.gpt_backbone import GPTBackBone
 
 
-class GPT(GPTBackBone):
+class GPTClassifier(GPTBackBone):
     def __init__(self):
         super.__init__()
 
