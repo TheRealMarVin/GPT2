@@ -7,4 +7,4 @@ class TransformerBlock(nn.Module):
         pass
 
     def forward(self, x):
-        pass
+        return x
