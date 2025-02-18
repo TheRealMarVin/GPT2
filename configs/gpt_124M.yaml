@@ -1,5 +1,6 @@
 model:
   name: gpt2-small
+  tokenizer: gpt2
   nb_layers: 12
   embedding_dim: 768
-  vocab_size: 50257
+

@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from transformers import GPT2Tokenizer
 
 from models.transformer_block import TransformerBlock
 
@@ -8,7 +9,8 @@ class GPTBackBone(nn.Module):
     def __init__(self, config):
         self.name = config["model"]["name"]
         nb_layers = config["model"]["nb_layers"]
-        vocab_size = config["model"]["vocab_size"] # TODO... I guess it is not the right way
+        self.tokenizer = GPT2Tokenizer.from_pretrained(config["model"]["tokenizer"])
+        vocab_size = self.tokenizer.vocab_size
         embedding_dim = config["model"]["embedding_dim"]
 
         self.tokens = nn.Embedding(vocab_size, embedding_dim)
