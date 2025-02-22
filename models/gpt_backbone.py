@@ -7,7 +7,9 @@ from models.transformer_block import TransformerBlock
 
 class GPTBackBone(nn.Module):
     def __init__(self, config):
-        self.name = config["model"]["name"]
+        super().__init__()
+
+        self.model_name = config["model"]["name"]
         nb_layers = config["model"]["nb_layers"]
         self.tokenizer = GPT2Tokenizer.from_pretrained(config["model"]["tokenizer"])
         vocab_size = self.tokenizer.vocab_size
@@ -18,9 +20,11 @@ class GPTBackBone(nn.Module):
 
 
     def forward(self, x):
+        attention_mask = x == self.pad_token
+
         x = self.tokens(x)
 
         for i, block in enumerate(self.transformers_blocks):
-            x = block(x)
+            x = block(x, attention_mask)
 
         return x
