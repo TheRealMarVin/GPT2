@@ -5,18 +5,18 @@ import torch.nn as nn
 class MultiHeadAttention(nn.Module):
     def __init__(self, config):
         super().__init__()
-        embedding_dim = config["model"]["embedding_dim"]
+        self.embedding_dim = config["model"]["embedding_dim"]
         self.nb_heads = config["model"]["attention"]["nb_heads"]
-        self.head_dim = embedding_dim // self.nb_heads
+        self.head_dim = self.embedding_dim // self.nb_heads
         enable_bias = config["model"]["attention"]["use_bias"]
         self.use_mask = config["model"]["attention"]["use_mask"]
         dropout_rate = config["model"]["attention"]["dropout_rate"]
 
-        self.query = nn.Linear(embedding_dim, embedding_dim, bias=enable_bias)
-        self.key = nn.Linear(embedding_dim, embedding_dim, bias=enable_bias)
-        self.value = nn.Linear(embedding_dim, embedding_dim, bias=enable_bias)
+        self.query = nn.Linear(self.embedding_dim, self.embedding_dim, bias=enable_bias)
+        self.key = nn.Linear(self.embedding_dim, self.embedding_dim, bias=enable_bias)
+        self.value = nn.Linear(self.embedding_dim, self.embedding_dim, bias=enable_bias)
 
-        self.out_proj = nn.Linear(embedding_dim, embedding_dim)
+        self.out_proj = nn.Linear(self.embedding_dim, self.embedding_dim)
         self.dropout = nn.Dropout(dropout_rate)
 
         if self.use_mask:
@@ -44,7 +44,7 @@ class MultiHeadAttention(nn.Module):
         if attention_mask is not None:
             attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)
 
-        if self.enable_mask:
+        if self.use_mask:
             mask_bool = self.mask.bool()[:context_length, :context_length]
             if attention_mask is not None:
                 attention_mask = mask_bool | attention_mask.bool()
@@ -58,7 +58,7 @@ class MultiHeadAttention(nn.Module):
 
         context_vec = (attn_weights @ values).transpose(1, 2)
 
-        context_vec = context_vec.contiguous().view(batch, context_length, self.out_embedding_dim)
+        context_vec = context_vec.contiguous().view(batch, context_length, self.embedding_dim)
         context_vec = self.out_proj(context_vec)  # optional projection
 
         return context_vec
