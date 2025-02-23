@@ -9,6 +9,7 @@ class GPTBackBone(nn.Module):
     def __init__(self, config):
         super().__init__()
 
+        self.pad_token = config["model"]["pad_token"]
         self.model_name = config["model"]["name"]
         nb_layers = config["model"]["nb_layers"]
         self.tokenizer = GPT2Tokenizer.from_pretrained(config["model"]["tokenizer"])
@@ -16,13 +17,21 @@ class GPTBackBone(nn.Module):
         embedding_dim = config["model"]["embedding_dim"]
 
         self.tokens = nn.Embedding(vocab_size, embedding_dim)
+        self.positional_embeddings = nn.Embedding(config["model"]["context_length"], embedding_dim)
+        self.embedding_dropout = nn.Dropout(config["model"]["token_dropout_rate"])
+
         self.transformers_blocks = nn.Sequential(*[TransformerBlock(config) for _ in range(nb_layers)])
 
 
     def forward(self, x):
+        batch_size, seq_len = x.shape
         attention_mask = x == self.pad_token
 
         x = self.tokens(x)
+        position_embeddings = self.positional_embeddings(torch.arange(seq_len, device=x.device))
+        x = x + position_embeddings
+        x = self.embedding_dropout(x)
+
 
         for i, block in enumerate(self.transformers_blocks):
             x = block(x, attention_mask)
