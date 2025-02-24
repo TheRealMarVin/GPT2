@@ -9,7 +9,7 @@ class GPT(GPTBackBone):
         super().__init__(config)
 
         embedding_dim = config["model"]["embedding_dim"]
-        self.top_k = None
+        self.top_k = config["model"]["sampler"]["top_k"]
 
         self.final_norm = nn.LayerNorm(embedding_dim)
         self.out_layer = nn.Linear(embedding_dim, self.tokenizer.vocab_size, bias=False)
