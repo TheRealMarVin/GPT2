@@ -3,14 +3,16 @@ import os
 
 import torch
 import torch.nn as nn
+from datasets import load_dataset
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
 
-from datasets.next_token_dataset import NextTokenDataset
+from torch_datasets.next_token_dataset import NextTokenDataset
 from helpers.config_helpers import load_config
 from models.gpt import GPT
 from schedulers.warmup_cosine_scheduler import WarmupCosineScheduler
 from train_eval.common_training_setup import TrainingConfig, run_specific_experiment
+from utils.download_datasets import download_sherlock_dataset
 from utils.next_token_training import next_token_train_epoch, next_token_evaluate
 
 
@@ -29,7 +31,8 @@ def main(training_config, model_config):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
-    with open("data/some_text.txt", "r", encoding="utf-8") as file:
+    data_file = download_sherlock_dataset("data", "sherlock.txt")
+    with open(data_file, "r", encoding="utf-8") as file:
         text_data = file.read()
 
     train_ratio = training_config["train_ratio"]
