@@ -10,6 +10,7 @@ class GPTBackBone(nn.Module):
     def __init__(self, config):
         super().__init__()
 
+        self.config = config
         self.pad_token = config["model"]["pad_token"]
         self.model_name = config["model"]["name"]
         nb_layers = config["model"]["nb_layers"]
