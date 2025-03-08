@@ -1,6 +1,6 @@
 model:
-  name: gpt2-small
-  hf_model_name: openai-community/gpt2
+  name: gpt2-medium-pt
+  hf_model_name: openai-community/gpt2-medium
   tokenizer: gpt2
   context_length: 1024
   embedding_dim: 768

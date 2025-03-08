@@ -1,5 +1,5 @@
 model:
-  name: gpt2-xl
+  name: gpt2-xl-pt
   hf_model_name: openai-community/gpt2-xl
   tokenizer: gpt2
   context_length: 1024
