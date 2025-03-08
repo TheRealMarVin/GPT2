@@ -3,6 +3,7 @@ import torch.nn as nn
 from transformers import GPT2Tokenizer
 
 from models.transformer_block import TransformerBlock
+from utils.download_weights import load_weights
 
 
 class GPTBackBone(nn.Module):
@@ -22,6 +23,13 @@ class GPTBackBone(nn.Module):
 
         self.transformers_blocks = nn.Sequential(*[TransformerBlock(config) for _ in range(nb_layers)])
 
+        self._init_extra_modules(config)
+
+        if "hf_model_name" in config["model"]:
+            load_weights(self, config["model"])
+
+    def _init_extra_modules(self, config):
+        pass
 
     def forward(self, x):
         batch_size, seq_len = x.shape
