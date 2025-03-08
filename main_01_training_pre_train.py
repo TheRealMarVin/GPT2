@@ -15,7 +15,7 @@ from utils.download_datasets import download_sherlock_dataset
 from utils.next_token_training import next_token_train_epoch, next_token_evaluate
 
 
-def main(training_config, model_config):
+def train_next_token(training_config, model_config):
     print("Start Training")
 
     if "seed" in training_config:
@@ -102,4 +102,4 @@ if __name__ == "__main__":
 
     model_config = load_config(args.model)
     training_config = load_config(args.training)
-    main(training_config, model_config)
+    train_next_token(training_config, model_config)
