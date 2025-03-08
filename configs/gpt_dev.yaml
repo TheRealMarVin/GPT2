@@ -1,7 +1,7 @@
 model:
   name: gpt2-small
   tokenizer: gpt2
-  context_length: 1024
+  context_length: 256
   embedding_dim: 768
   nb_layers: 12
   pad_token: -100
