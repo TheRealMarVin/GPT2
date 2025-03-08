@@ -1,0 +1,22 @@
+model:
+  name: gpt2-small
+  hf_model_name: openai-community/gpt2
+  tokenizer: gpt2
+  context_length: 1024
+  embedding_dim: 768
+  nb_layers: 12
+  pad_token: -100
+  token_dropout_rate: 0.1
+
+  attention:
+    nb_heads: 12
+    dropout_rate: 0.1
+    use_bias: True
+    use_mask: True
+
+  transformer_block:
+    expand_factor: 4
+    dropout_rate: 0.1
+
+  sampler:
+    top_k: 3
