@@ -82,6 +82,6 @@ def main(training_config, model_config):
 
 
 if __name__ == "__main__":
-    model_config = load_config("configs/gpt_124M.yaml")
+    model_config = load_config("configs/gpt_124M_pre_trained.yaml")
     training_config = load_config("configs/next_token_training.yaml")
     main(training_config, model_config)
