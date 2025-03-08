@@ -25,18 +25,18 @@ def main(training_config, model_config):
 
     model = GPT(model_config)
 
+    if "clip_grad_norm" in training_config and training_config["clip_grad_norm"]:
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
     start_context = "Sherlock entered the"
     print("Input text:", start_context)
 
     out = model.generate_text(contexts=start_context)
     print("text before pre training:")
     print(out)
-
-    if "clip_grad_norm" in training_config and training_config["clip_grad_norm"]:
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
 
     data_file = download_sherlock_dataset("data", "sherlock.txt")
     with open(data_file, "r", encoding="utf-8") as file:
