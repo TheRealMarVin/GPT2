@@ -2,5 +2,5 @@ seed: 42
 clip_grad_norm: True
 train_ratio: 0.9
 learning_rate: 0.0005
-nb_epochs: 1
+nb_epochs: 50
 batch_size: 4
