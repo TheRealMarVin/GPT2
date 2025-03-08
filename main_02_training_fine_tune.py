@@ -87,7 +87,7 @@ def main(training_config, model_config):
 
 if __name__ == "__main__":
     default_model_config = "configs/gpt_124M_pre_trained.yaml"
-    default_training_config = "configs/next_token_training.yaml"
+    default_training_config = "configs/fine_tuning_training.yaml"
 
     parser = argparse.ArgumentParser(description="Configuration to launch training of the next token.")
     parser.add_argument("--model", type=str, default=default_model_config, help="Configuration to define the model to use during training.")
