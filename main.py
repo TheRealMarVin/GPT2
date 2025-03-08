@@ -1,3 +1,4 @@
+import argparse
 import os
 
 import torch
@@ -82,6 +83,14 @@ def main(training_config, model_config):
 
 
 if __name__ == "__main__":
-    model_config = load_config("configs/gpt_124M_pre_trained.yaml")
-    training_config = load_config("configs/next_token_training.yaml")
+    default_model_config = "configs/gpt_124M_pre_trained.yaml"
+    default_training_config = "configs/next_token_training.yaml"
+
+    parser = argparse.ArgumentParser(description="Configuration to launch training of the next token.")
+    parser.add_argument("--model", type=str, default=default_model_config, help="Configuration to define the model to use during training.")
+    parser.add_argument("--training", type=str, default=default_training_config, help="Configuration of the training routine.")
+    args = parser.parse_args()
+
+    model_config = load_config(args.model)
+    training_config = load_config(args.training)
     main(training_config, model_config)
