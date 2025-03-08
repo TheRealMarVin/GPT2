@@ -76,7 +76,7 @@ def main(training_config, model_config):
                             eval_logic=next_token_evaluate, eval_args=eval_args,
                             summary=summary)
 
-    start_context = "Hello, I am"
+    start_context = "Sherlock entered the"
     print("Input text:", start_context)
 
     out = model.generate_text(contexts=start_context)
