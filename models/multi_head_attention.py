@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class MultiHeadAttention(nn.Module):
     def __init__(self, config):
         super().__init__()
@@ -20,8 +21,7 @@ class MultiHeadAttention(nn.Module):
 
         if self.use_mask:
             context_length = config["model"]["context_length"]
-            causal_mask = torch.triu(torch.full((context_length, context_length), fill_value=-torch.inf), diagonal=1)
-            self.register_buffer("mask", causal_mask)
+            self.register_buffer("mask", torch.triu(torch.ones(context_length, context_length), diagonal=1))
 
     def forward(self, x, attention_mask=None):
         batch, context_length, embedding_dim = x.shape
@@ -30,26 +30,35 @@ class MultiHeadAttention(nn.Module):
         queries = self.query(x)
         values = self.value(x)
 
-        # Reshape for multi-head attention
-        keys = keys.view(batch, context_length, self.nb_heads, self.head_dim).transpose(1, 2)
-        queries = queries.view(batch, context_length, self.nb_heads, self.head_dim).transpose(1, 2)
-        values = values.view(batch, context_length, self.nb_heads, self.head_dim).transpose(1, 2)
+        # This way of doing it in the book is quite cool
+        keys = keys.view(batch, context_length, self.nb_heads, self.head_dim)
+        values = values.view(batch, context_length, self.nb_heads, self.head_dim)
+        queries = queries.view(batch, context_length, self.nb_heads, self.head_dim)
 
-        attn_scores = queries @ keys.transpose(-2, -1)
+        keys = keys.transpose(1, 2)
+        queries = queries.transpose(1, 2)
+        values = values.transpose(1, 2)
 
-        # Apply **causal mask** only during training
-        if self.training and self.use_mask:
-            causal_mask = self.mask[:context_length, :context_length]
-            attn_scores = attn_scores + causal_mask.unsqueeze(0).unsqueeze(0)
+        attn_scores = queries @ keys.transpose(2, 3)  # Dot product for each head
 
-        # Apply **padding mask** always
         if attention_mask is not None:
-            attn_scores = attn_scores + attention_mask.unsqueeze(1).unsqueeze(2)
+            attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)
 
-        attn_weights = torch.softmax(attn_scores / self.head_dim ** 0.5, dim=-1)
+        if self.use_mask:
+            mask_bool = self.mask.bool()[:context_length, :context_length]
+            if attention_mask is not None:
+                attention_mask = mask_bool | attention_mask.bool()
+            else:
+                attention_mask = mask_bool
+
+        attn_scores.masked_fill_(attention_mask, -torch.inf)
+
+        attn_weights = torch.softmax(attn_scores / keys.shape[-1] ** 0.5, dim=-1)
         attn_weights = self.dropout(attn_weights)
 
-        context_vec = (attn_weights @ values).transpose(1, 2).contiguous().view(batch, context_length, self.embedding_dim)
-        context_vec = self.out_proj(context_vec)
+        context_vec = (attn_weights @ values).transpose(1, 2)
+
+        context_vec = context_vec.contiguous().view(batch, context_length, self.embedding_dim)
+        context_vec = self.out_proj(context_vec)  # optional projection
 
         return context_vec
