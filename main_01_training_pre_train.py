@@ -83,10 +83,20 @@ def train_next_token(training_config, model_config):
                             summary=summary)
 
     start_context = "Sherlock entered the"
-    print("Input text:", start_context)
+    experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.5), ("top_k", 3, 1.5), ("top_k", 1, 1.0), ("top_k", 5, 1.0),
+                   ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0), ("top_p", 0.2, 1.0)]
+    for key, val, temperature in experiments:
+        print(f"Input text: {start_context} - Temperature: {temperature} - Sampling: {key}:{val}")
+        if "top_k" in model.config["model"]["sampler"]:
+            del model.config["model"]["sampler"]["top_k"]
+        if "top_p" in model.config["model"]["sampler"]:
+            del model.config["model"]["sampler"]["top_p"]
 
-    out = model.generate_text(contexts=start_context)
-    print(out)
+        model.config["model"]["sampler"][key] = val
+        model.config["model"]["sampler"]["temperature"] = temperature
+
+        out = model.generate_text(contexts=start_context)
+        print(out)
 
     print("Training Done!")
 
