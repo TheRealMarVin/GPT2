@@ -76,7 +76,7 @@ def main(training_config, model_config):
     start_context = "Hello, I am"
     print("Input text:", start_context)
 
-    out = model.generate_text(contexts=start_context, max_length=30, temperature=1.2)
+    out = model.generate_text(contexts=start_context)
     print(out)
 
     print("Training Done!")

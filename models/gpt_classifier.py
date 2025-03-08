@@ -9,4 +9,7 @@ class GPTClassifier(GPTBackBone):
         super().__init__(config)
 
     def forward(self, x):
-        pass
+        x = super().forward(x)
+
+        logits = torch.matmul(x, self.tokens.weight.T)
+        return logits
