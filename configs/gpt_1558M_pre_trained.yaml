@@ -19,6 +19,6 @@ model:
     dropout_rate: 0.1
 
   sampler:
-    max_length: 50
+    max_length: 100
     temperature: 1.0
     top_k: 5
