@@ -12,7 +12,7 @@ from helpers.config_helpers import load_config
 from models.gpt import GPT
 from schedulers.warmup_cosine_scheduler import WarmupCosineScheduler
 from train_eval.common_training_setup import TrainingConfig, run_specific_experiment
-from utils.download_datasets import download_sherlock_dataset
+from utils.download_sherlock_datasets import download_sherlock_dataset
 from utils.next_token_training import next_token_train_epoch, next_token_evaluate
 
 
