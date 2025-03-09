@@ -16,4 +16,8 @@ class AlpacaDataset(Dataset):
         output = merged_data[1:]
         content_tensor = torch.tensor(input, dtype=torch.long)
         label_tensor = torch.tensor(output, dtype=torch.long)
-        return content_tensor, label_tensor
+
+        return {
+            "input_ids": content_tensor,
+            "labels": label_tensor
+        }
