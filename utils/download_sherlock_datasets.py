@@ -21,7 +21,7 @@ def download_sherlock_dataset(out_folder, out_name, override_files=False):
         os.makedirs(out_folder)
 
     filename = os.path.join(out_folder, out_name)
-    if path.exists(filename) and override_files:
+    if path.exists(filename) and not override_files:
         return
 
     data = []
