@@ -57,9 +57,9 @@ def next_token_evaluate(iterator, model, metrics_dict, global_metrics_dict={}, t
         metric_scores[k] = 0
 
     with torch.no_grad():
-        all_pred = []
-        all_true = []
-        all_src = []
+        # all_pred = []
+        # all_true = []
+        # all_src = []
 
         for i, batch in tqdm(enumerate(iterator), total=len(iterator), desc="eval"):
             src = batch["input_ids"]
@@ -84,9 +84,9 @@ def next_token_evaluate(iterator, model, metrics_dict, global_metrics_dict={}, t
             else:
                 y_pred = y_pred.detach().cpu().numpy()
 
-            all_pred.extend(y_pred)
-            all_src.extend(src.detach().cpu().numpy())
-            all_true.extend(y_true.detach().cpu().numpy())
+            # all_pred.extend(y_pred)
+            # all_src.extend(src.detach().cpu().numpy())
+            # all_true.extend(y_true.detach().cpu().numpy())
 
             del y_pred
             del src
@@ -95,6 +95,7 @@ def next_token_evaluate(iterator, model, metrics_dict, global_metrics_dict={}, t
     for k, v in metric_scores.items():
         metric_scores[k] = v / len(iterator)
 
-    results = {"src": all_src, "pred": all_pred, "true": all_true}
+    #  results = {"src": all_src, "pred": all_pred, "true": all_true}
+    results = {}
 
     return results, metric_scores
