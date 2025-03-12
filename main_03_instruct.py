@@ -14,6 +14,7 @@ from models.gpt import GPT
 from schedulers.warmup_cosine_scheduler import WarmupCosineScheduler
 from torch_datasets.alpaca_dataset import AlpacaDataset
 from train_eval.common_training_setup import run_specific_experiment, TrainingConfig
+from utils.download_instruct_dataset import load_or_download_instruct_dataset_file
 from utils.instruction_helpers import format_input_for_alpaca, format_output_for_alpaca
 from utils.next_token_training import next_token_train_epoch, next_token_evaluate
 from utils.training_utils import custom_collate_fn
@@ -71,10 +72,10 @@ def train_instruct(training_config, model_config):
                   "criterion": nn.CrossEntropyLoss(),
                   "metrics_dict": {"loss": nn.CrossEntropyLoss()},
                   "model": model}
-    eval_args = {"model": model, "metrics_dict": {"loss": nn.CrossEntropyLoss()}}
+    # eval_args = {"model": model, "metrics_dict": {"loss": nn.CrossEntropyLoss()}}
 
     run_specific_experiment(train_config, next_token_train_epoch, train_args,
-                            eval_logic=next_token_evaluate, eval_args=eval_args,
+                            eval_logic=next_token_evaluate,
                             summary=summary)
 
     _display_sample(model, "What is the color of the ocean?", "")
@@ -85,8 +86,7 @@ def train_instruct(training_config, model_config):
 def _create_alpaca_datasets(file_path, model):
     tokenizer = model.tokenizer
 
-    with open(file_path, "r") as file:
-        data = json.load(file)
+    data = load_or_download_instruct_dataset_file(file_path)
 
     tokenized_data = []
     for entry in data:
@@ -117,11 +117,12 @@ def _display_sample(model, instruction, instruction_input):
     print("********************************")
     print("input: ", entry)
     print("output: ", out)
+    out = None
 
 
 if __name__ == "__main__":
     default_model_config = "configs/gpt_124M_pre_trained.yaml"
-    default_training_config = "configs/fine_tuning_training.yaml"
+    default_training_config = "configs/instruct_training.yaml"
 
     parser = argparse.ArgumentParser(description="Configuration to launch training of the next token.")
     parser.add_argument("--model", type=str, default=default_model_config, help="Configuration to define the model to use during training.")
