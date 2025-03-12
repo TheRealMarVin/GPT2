@@ -1,0 +1,8 @@
+seed: 42
+use_lora: True
+clip_grad_norm: True
+train_ratio: 0.9
+learning_rate: 0.0005
+nb_epochs: 4
+
+batch_size: 4

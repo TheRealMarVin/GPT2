@@ -12,10 +12,11 @@ from models.gpt import GPT
 from schedulers.warmup_cosine_scheduler import WarmupCosineScheduler
 from train_eval.common_training_setup import TrainingConfig, run_specific_experiment
 from utils.download_sherlock_datasets import download_sherlock_dataset
+from utils.lora_wrapper import adapt_model_for_lora
 from utils.next_token_training import next_token_train_epoch, next_token_evaluate
 
 
-def train_next_token(training_config, model_config):
+def train_next_token(training_config, model_config, post_fix=""):
     print("Start Training")
 
     if "seed" in training_config:
@@ -23,6 +24,10 @@ def train_next_token(training_config, model_config):
         torch.manual_seed(seed)
 
     model = GPT(model_config)
+    model.model_name = model.model_name + post_fix
+
+    if "use_lora" in training_config and training_config["use_lora"]:
+        adapt_model_for_lora(model, rank=16, alpha=16, ignore_list=["out_layer"])
 
     if "clip_grad_norm" in training_config and training_config["clip_grad_norm"]:
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
@@ -88,6 +93,7 @@ def train_next_token(training_config, model_config):
     experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
                    ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0), ("top_p", 1.0, 1.0)]
     for key, val, temperature in experiments:
+        print("*******************")
         print(f"Input text: {start_context} - Temperature: {temperature} - Sampling: {key}:{val}")
         if "top_k" in model.config["model"]["sampler"]:
             del model.config["model"]["sampler"]["top_k"]
