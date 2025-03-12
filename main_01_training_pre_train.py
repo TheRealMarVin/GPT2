@@ -16,14 +16,16 @@ from utils.lora_wrapper import adapt_model_for_lora
 from utils.next_token_training import next_token_train_epoch, next_token_evaluate
 
 
-def train_next_token(training_config, model_config, post_fix=""):
+def train_next_token(training_config, model_config, post_fix="", model=None):
     print("Start Training")
 
     if "seed" in training_config:
         seed = training_config["seed"]
         torch.manual_seed(seed)
 
-    model = GPT(model_config)
+    if model is None:
+        model = GPT(model_config)
+
     model.model_name = model.model_name + post_fix
 
     if "use_lora" in training_config and training_config["use_lora"]:
@@ -107,6 +109,7 @@ def train_next_token(training_config, model_config, post_fix=""):
         print(out)
 
     print("Training Done!")
+    return model
 
 
 if __name__ == "__main__":

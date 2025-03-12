@@ -20,14 +20,16 @@ from utils.next_token_training import next_token_train_epoch, next_token_evaluat
 from utils.training_utils import custom_collate_fn
 
 
-def train_instruct(training_config, model_config):
+def train_instruct(training_config, model_config, model=None):
     print("Start Training")
 
     if "seed" in training_config:
         seed = training_config["seed"]
         torch.manual_seed(seed)
 
-    model = GPT(model_config)
+    if model is None:
+        model = GPT(model_config)
+
     model.model_name = model.model_name + "_instruct"
 
     if "clip_grad_norm" in training_config and training_config["clip_grad_norm"]:
@@ -82,6 +84,7 @@ def train_instruct(training_config, model_config):
     _display_sample(model, "Describe a sunny day.", "")
 
     print("Training Done!")
+    return model
 
 def _create_alpaca_datasets(file_path, model):
     tokenizer = model.tokenizer
