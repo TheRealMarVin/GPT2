@@ -18,7 +18,7 @@ from utils.next_token_training import next_token_train_epoch, next_token_evaluat
 
 if __name__ == "__main__":
     default_model_config = "configs/gpt_124M_pre_trained.yaml"
-    default_training_config = "configs/fine_tuning_training_lora.yaml"
+    default_training_config = "configs/instruct_training_lora.yaml"
 
     parser = argparse.ArgumentParser(description="Configuration to launch training of the next token.")
     parser.add_argument("--model", type=str, default=default_model_config, help="Configuration to define the model to use during training.")
