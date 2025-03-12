@@ -31,6 +31,7 @@ def train_next_token(training_config, model_config):
     model.to(device)
 
     start_context = "Sherlock entered the"
+    start_context = "Sherlock asked Watson what is the name of your wife?"
     print("Input text:", start_context)
 
     out = model.generate_text(contexts=start_context)
@@ -83,8 +84,9 @@ def train_next_token(training_config, model_config):
                             summary=summary)
 
     start_context = "Sherlock entered the"
-    experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.5), ("top_k", 3, 1.5), ("top_k", 1, 1.0), ("top_k", 5, 1.0),
-                   ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0), ("top_p", 0.2, 1.0)]
+    start_context = "Sherlock asked Watson what is the name of your wife?"
+    experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
+                   ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0), ("top_p", 1.0, 1.0)]
     for key, val, temperature in experiments:
         print(f"Input text: {start_context} - Temperature: {temperature} - Sampling: {key}:{val}")
         if "top_k" in model.config["model"]["sampler"]:
