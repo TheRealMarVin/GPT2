@@ -27,4 +27,4 @@ if __name__ == "__main__":
 
     model_config = load_config(args.model)
     training_config = load_config(args.training)
-    train_next_token(training_config, model_config)
+    train_next_token(training_config, model_config, post_fix="_fine_tuned")
