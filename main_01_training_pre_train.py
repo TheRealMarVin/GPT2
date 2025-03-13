@@ -35,8 +35,7 @@ def train_next_token(training_config, model_config, post_fix=""):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
-    start_context = "Sherlock entered the"
-    start_context = "Sherlock asked Watson what is the name of your wife?"
+    start_context = "In Sherlock Holmes, what is the name of Dr. Watson wife?"
     print("Input text:", start_context)
 
     out = model.generate_text(contexts=start_context)
@@ -88,8 +87,6 @@ def train_next_token(training_config, model_config, post_fix=""):
                             eval_logic=next_token_evaluate, eval_args=eval_args,
                             summary=summary)
 
-    start_context = "Sherlock entered the"
-    start_context = "Sherlock asked Watson what is the name of your wife?"
     experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
                    ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0), ("top_p", 1.0, 1.0)]
     for key, val, temperature in experiments:
