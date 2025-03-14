@@ -107,6 +107,7 @@ def train_next_token(training_config, model_config, post_fix=""):
         print(out)
 
     print("Training Done!")
+    return model
 
 
 if __name__ == "__main__":

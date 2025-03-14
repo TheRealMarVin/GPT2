@@ -7,6 +7,7 @@ from torch import optim
 from torch.utils.tensorboard import SummaryWriter
 
 from main_01_training_pre_train import train_next_token
+from main_03_training_instruct import train_instruct
 from torch_datasets.next_token_dataset import NextTokenDataset
 from helpers.config_helpers import load_config
 from models.gpt import GPT
@@ -28,4 +29,4 @@ if __name__ == "__main__":
     model_config = load_config(args.model)
     training_config = load_config(args.training)
 
-    train_next_token(training_config, model_config, post_fix="_lora")
+    train_instruct(training_config, model_config, post_fix="_instruct_lora")

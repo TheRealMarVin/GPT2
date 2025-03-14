@@ -20,7 +20,7 @@ from utils.next_token_training import next_token_train_epoch, next_token_evaluat
 from utils.training_utils import custom_collate_fn
 
 
-def train_instruct(training_config, model_config, model=None):
+def train_instruct(training_config, model_config, model=None, post_fix=""):
     print("Start Training")
 
     if "seed" in training_config:
@@ -30,7 +30,7 @@ def train_instruct(training_config, model_config, model=None):
     if model is None:
         model = GPT(model_config)
 
-    model.model_name = model.model_name + "_instruct"
+    model.model_name = model.model_name + post_fix
 
     if "clip_grad_norm" in training_config and training_config["clip_grad_norm"]:
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
@@ -134,4 +134,5 @@ if __name__ == "__main__":
 
     model_config = load_config(args.model)
     training_config = load_config(args.training)
-    train_instruct(training_config, model_config)
+
+    train_instruct(training_config, model_config, post_fix="_instruct")
