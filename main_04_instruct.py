@@ -83,7 +83,7 @@ def train_instruct(training_config, model_config):
 
     print("Training Done!")
 
-def _create_alpaca_datasets(file_path, model):
+def _create_alpaca_datasets(file_path, model, max_context_length=1024):
     tokenizer = model.tokenizer
 
     data = load_or_download_instruct_dataset_file(file_path)
@@ -97,7 +97,7 @@ def _create_alpaca_datasets(file_path, model):
         tokenized_output = tokenizer(output)["input_ids"]
         tokenized_output.append(tokenizer.eos_token_id)
 
-        if len(tokenized_input) + len(tokenized_output) <= 1024:
+        if len(tokenized_input) + len(tokenized_output) <= max_context_length:
             tokenized_data.append((tokenized_input, tokenized_output))
 
     train_data, test_data = train_test_split(tokenized_data, test_size=0.05, random_state=42)
