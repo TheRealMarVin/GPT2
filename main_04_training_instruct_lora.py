@@ -18,13 +18,14 @@ from utils.next_token_training import next_token_train_epoch, next_token_evaluat
 
 if __name__ == "__main__":
     default_model_config = "configs/gpt_124M_pre_trained.yaml"
-    default_training_config = "configs/fine_tuning_training.yaml"
+    default_training_config = "configs/instruct_training_lora.yaml"
 
-    parser = argparse.ArgumentParser(description="Configuration to launch training fine tuning of the next token.")
+    parser = argparse.ArgumentParser(description="Configuration to launch training instruction with LoRA.")
     parser.add_argument("--model", type=str, default=default_model_config, help="Configuration to define the model to use during training.")
     parser.add_argument("--training", type=str, default=default_training_config, help="Configuration of the training routine.")
     args = parser.parse_args()
 
     model_config = load_config(args.model)
     training_config = load_config(args.training)
-    train_next_token(training_config, model_config, post_fix="_fine_tuned")
+
+    train_next_token(training_config, model_config, post_fix="_lora")
