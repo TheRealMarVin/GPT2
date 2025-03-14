@@ -1,5 +1,6 @@
 import argparse
 import os
+from functools import partial
 
 import torch
 import torch.nn as nn
@@ -14,9 +15,10 @@ from train_eval.common_training_setup import TrainingConfig, run_specific_experi
 from utils.download_sherlock_datasets import download_sherlock_dataset
 from utils.lora_wrapper import adapt_model_for_lora
 from utils.next_token_training import next_token_train_epoch, next_token_evaluate
+from utils.training_utils import custom_collate_fn
 
 
-def train_next_token(training_config, model_config, post_fix=""):
+def train_next_token(training_config, model_config, post_fix="", experiments=[]):
     print("Start Training")
 
     if "seed" in training_config:
@@ -35,11 +37,11 @@ def train_next_token(training_config, model_config, post_fix=""):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
-    start_context = "In Sherlock Holmes, what is the name of Dr. Watson wife?"
-    print("Input text:", start_context)
+    start_context = "Where is the home of Sherlock Holmes and Dr. Watson?"
 
     out = model.generate_text(contexts=start_context)
-    print("text before pre training:")
+    print("text before training:")
+    print("Input text:", start_context)
     print(out)
 
     data_file = download_sherlock_dataset("data", "sherlock.txt")
@@ -49,10 +51,10 @@ def train_next_token(training_config, model_config, post_fix=""):
     train_ratio = training_config["train_ratio"]
     split_idx = int(train_ratio * len(text_data))
     train_data = text_data[:split_idx]
-    train_dataset = NextTokenDataset(txt=train_data, tokenizer=model.tokenizer, max_length=256, stride=128)
+    train_dataset = NextTokenDataset(txt=train_data, tokenizer=model.tokenizer, max_length=1024, stride=16)
 
     test_data = text_data[split_idx:]
-    test_dataset = NextTokenDataset(txt=test_data, tokenizer=model.tokenizer, max_length=256, stride=128)
+    test_dataset = NextTokenDataset(txt=test_data, tokenizer=model.tokenizer, max_length=1024, stride=128)
 
     learning_rate = training_config["learning_rate"]
     nb_epochs = training_config["nb_epochs"]
@@ -68,6 +70,7 @@ def train_next_token(training_config, model_config, post_fix=""):
     scheduler = WarmupCosineScheduler(optimizer=optimizer, warmup_steps=10, total_steps=20,
                                       min_lr=0.0000001, summary=summary)
 
+    customized_collate_fn = partial(custom_collate_fn, input_padding=model.tokenizer.eos_token_id, output_ignore_index=-100)
     train_config = TrainingConfig(datasets=(train_dataset, test_dataset),
                                   batch_size=training_config["batch_size"],
                                   nb_epochs=nb_epochs,
@@ -75,20 +78,22 @@ def train_next_token(training_config, model_config, post_fix=""):
                                   scheduler=scheduler,
                                   experiment_name=model_name,
                                   save_logic=save_logic,
-                                  ignore_validation=False)
+                                  ignore_validation=False,
+                                  customized_collate_fn=customized_collate_fn)
 
     train_args = {"optimizer": optimizer,
                   "criterion": nn.CrossEntropyLoss(),
                   "metrics_dict": {"loss": nn.CrossEntropyLoss()},
                   "model": model}
-    eval_args = {"model": model, "metrics_dict": {"loss": nn.CrossEntropyLoss()}}
 
     run_specific_experiment(train_config, next_token_train_epoch, train_args,
-                            eval_logic=next_token_evaluate, eval_args=eval_args,
-                            summary=summary)
+                            eval_logic=next_token_evaluate, summary=summary)
 
-    experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
-                   ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0), ("top_p", 1.0, 1.0)]
+    out = model.generate_text(contexts=start_context)
+    print("text after training:")
+    print("Input text:", start_context)
+    print(out)
+
     for key, val, temperature in experiments:
         print("*******************")
         print(f"Input text: {start_context} - Temperature: {temperature} - Sampling: {key}:{val}")
@@ -117,4 +122,9 @@ if __name__ == "__main__":
 
     model_config = load_config(args.model)
     training_config = load_config(args.training)
-    train_next_token(training_config, model_config)
+
+    experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
+                   ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0),
+                   ("top_p", 1.0, 1.0)]
+
+    train_next_token(training_config, model_config, experiments=experiments)
