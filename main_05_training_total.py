@@ -35,5 +35,8 @@ if __name__ == "__main__":
     fine_tuning_training_config = load_config(args.fine_tune_training)
     instruct_training_config = load_config(args.instruct_training)
 
-    model = train_next_token(fine_tuning_training_config, model_config, post_fix="_final")
-    train_instruct(instruct_training_config, model_config, model=model, post_fix="_instruct_lora")
+    experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
+                   ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0),
+                   ("top_p", 1.0, 1.0)]
+    model = train_next_token(fine_tuning_training_config, model_config, post_fix="_final", experiments=experiments)
+    train_instruct(instruct_training_config, model_config, model=model, post_fix="_instruct_lora", experiments=experiments)

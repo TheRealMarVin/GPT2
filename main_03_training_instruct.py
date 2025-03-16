@@ -20,7 +20,7 @@ from utils.next_token_training import next_token_train_epoch, next_token_evaluat
 from utils.training_utils import custom_collate_fn
 
 
-def train_instruct(training_config, model_config, model=None, post_fix=""):
+def train_instruct(training_config, model_config, model=None, post_fix="", experiments=[]):
     print("Start Training")
 
     if "seed" in training_config:
@@ -82,6 +82,7 @@ def train_instruct(training_config, model_config, model=None, post_fix=""):
 
     _display_sample(model, "What is the color of the ocean?", "")
     _display_sample(model, "Describe a sunny day.", "")
+    _display_sample(model, "Where do Sherlock Holmes and Dr. Watson live?", "", experiments=experiments)
 
     print("Training Done!")
     return model
@@ -111,16 +112,28 @@ def _create_alpaca_datasets(file_path, model, max_context_length=1024):
     return train_dataset, test_dataset
 
 
-def _display_sample(model, instruction, instruction_input):
+def _display_sample(model, instruction, instruction_input, experiments=[]):
+    print("********************************")
     entry = {"instruction": instruction, "input": instruction_input, "output": ""}
     start_context = format_input_for_alpaca(entry) + format_output_for_alpaca(entry)
 
     out = model.generate_text(contexts=start_context, eos_id=model.tokenizer.eos_token_id, remove_context=True)
-
-    print("********************************")
     print("input: ", entry)
     print("output: ", out)
-    out = None
+
+    for key, val, temperature in experiments:
+        print("XXXX")
+        print(f"Input text: {start_context} - Temperature: {temperature} - Sampling: {key}:{val}")
+        if "top_k" in model.config["model"]["sampler"]:
+            del model.config["model"]["sampler"]["top_k"]
+        if "top_p" in model.config["model"]["sampler"]:
+            del model.config["model"]["sampler"]["top_p"]
+
+        model.config["model"]["sampler"][key] = val
+        model.config["model"]["sampler"]["temperature"] = temperature
+
+        out = model.generate_text(contexts=start_context)
+        print(out)
 
 
 if __name__ == "__main__":
@@ -135,4 +148,7 @@ if __name__ == "__main__":
     model_config = load_config(args.model)
     training_config = load_config(args.training)
 
-    train_instruct(training_config, model_config, post_fix="_instruct")
+    experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
+                   ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0),
+                   ("top_p", 1.0, 1.0)]
+    train_instruct(training_config, model_config, post_fix="_instruct", experiments=experiments)

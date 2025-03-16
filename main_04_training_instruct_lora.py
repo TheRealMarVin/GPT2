@@ -29,4 +29,7 @@ if __name__ == "__main__":
     model_config = load_config(args.model)
     training_config = load_config(args.training)
 
-    train_instruct(training_config, model_config, post_fix="_instruct_lora")
+    experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
+                   ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0),
+                   ("top_p", 1.0, 1.0)]
+    train_instruct(training_config, model_config, post_fix="_instruct_lora", experiments=experiments)

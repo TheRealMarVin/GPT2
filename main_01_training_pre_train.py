@@ -51,10 +51,10 @@ def train_next_token(training_config, model_config, post_fix="", experiments=[])
     train_ratio = training_config["train_ratio"]
     split_idx = int(train_ratio * len(text_data))
     train_data = text_data[:split_idx]
-    train_dataset = NextTokenDataset(txt=train_data, tokenizer=model.tokenizer, max_length=1024, stride=16)
+    train_dataset = NextTokenDataset(txt=train_data, tokenizer=model.tokenizer, max_length=model_config["model"]["context_length"], stride=training_config["stride"])
 
     test_data = text_data[split_idx:]
-    test_dataset = NextTokenDataset(txt=test_data, tokenizer=model.tokenizer, max_length=1024, stride=128)
+    test_dataset = NextTokenDataset(txt=test_data, tokenizer=model.tokenizer, max_length=model_config["model"]["context_length"], stride=256)
 
     learning_rate = training_config["learning_rate"]
     nb_epochs = training_config["nb_epochs"]
