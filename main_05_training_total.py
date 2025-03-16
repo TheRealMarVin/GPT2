@@ -38,5 +38,12 @@ if __name__ == "__main__":
     experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
                    ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0),
                    ("top_p", 1.0, 1.0)]
-    model = train_next_token(fine_tuning_training_config, model_config, post_fix="_final", experiments=experiments)
-    train_instruct(instruct_training_config, model_config, model=model, post_fix="_instruct_lora", experiments=experiments)
+    test_data = [("What is the color of the ocean?", []), ("Describe a sunny day.", []),
+                 ("Where do Sherlock Holmes and Dr. Watson live?", experiments)]
+    with open("test_data/sherlock_questions.txt", 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+        new_tests = [(x.strip(), []) for x in lines]
+        test_data.extend(new_tests)
+
+    model = train_next_token(fine_tuning_training_config, model_config, post_fix="_final")
+    train_instruct(instruct_training_config, model_config, model=model, post_fix="_instruct_lora", test_data=test_data)

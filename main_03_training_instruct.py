@@ -20,7 +20,7 @@ from utils.next_token_training import next_token_train_epoch, next_token_evaluat
 from utils.training_utils import custom_collate_fn
 
 
-def train_instruct(training_config, model_config, model=None, post_fix="", experiments=[]):
+def train_instruct(training_config, model_config, model=None, post_fix="", test_data=[]):
     print("Start Training")
 
     if "seed" in training_config:
@@ -39,8 +39,9 @@ def train_instruct(training_config, model_config, model=None, post_fix="", exper
     model.to(device)
 
     print("Before training")
-    _display_sample(model, "What is the color of the ocean?", "")
-    _display_sample(model, "Describe a sunny day.", "")
+
+    for instruction, _ in test_data:
+        _display_sample(model, instruction, "")
 
     train_dataset, test_dataset = _create_alpaca_datasets(file_path="./data/instruction-data.json", model=model)
 
@@ -80,9 +81,9 @@ def train_instruct(training_config, model_config, model=None, post_fix="", exper
                             eval_logic=next_token_evaluate,
                             summary=summary)
 
-    _display_sample(model, "What is the color of the ocean?", "")
-    _display_sample(model, "Describe a sunny day.", "")
-    _display_sample(model, "Where do Sherlock Holmes and Dr. Watson live?", "", experiments=experiments)
+    for instruction, experiments in test_data:
+        print("!!!!New Test Data!!!!")
+        _display_sample(model, instruction, "", experiments=experiments)
 
     print("Training Done!")
     return model
@@ -151,4 +152,6 @@ if __name__ == "__main__":
     experiments = [("top_k", 3, 1.0), ("top_k", 3, 0.25), ("top_k", 3, 2), ("top_k", 1, 1.0), ("top_k", 40, 1.0),
                    ("top_p", 0.1, 1.0), ("top_p", 0.1, 0.5), ("top_p", 0.1, 1.5), ("top_p", 0.05, 1.0),
                    ("top_p", 1.0, 1.0)]
-    train_instruct(training_config, model_config, post_fix="_instruct", experiments=experiments)
+    test_data = [("What is the color of the ocean?", []), ("Describe a sunny day.", []),
+                 ("Where do Sherlock Holmes and Dr. Watson live?", experiments)]
+    train_instruct(training_config, model_config, post_fix="_instruct", test_data=test_data)
