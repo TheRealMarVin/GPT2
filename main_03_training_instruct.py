@@ -123,7 +123,7 @@ def _display_sample(model, instruction, instruction_input, experiments=[]):
 
     for key, val, temperature in experiments:
         print("XXXX")
-        print(f"Input text: {start_context} - Temperature: {temperature} - Sampling: {key}:{val}")
+        print(f"Temperature: {temperature} - Sampling: {key}:{val} - Input text: {instruction} - ")
         if "top_k" in model.config["model"]["sampler"]:
             del model.config["model"]["sampler"]["top_k"]
         if "top_p" in model.config["model"]["sampler"]:
@@ -132,7 +132,7 @@ def _display_sample(model, instruction, instruction_input, experiments=[]):
         model.config["model"]["sampler"][key] = val
         model.config["model"]["sampler"]["temperature"] = temperature
 
-        out = model.generate_text(contexts=start_context)
+        out = model.generate_text(contexts=start_context, eos_id=model.tokenizer.eos_token_id, remove_context=True)
         print(out)
 
 
