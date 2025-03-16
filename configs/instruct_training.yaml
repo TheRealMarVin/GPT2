@@ -4,4 +4,4 @@ train_ratio: 0.9
 learning_rate: 0.0005
 nb_epochs: 4
 
-batch_size: 3
+batch_size: 4
