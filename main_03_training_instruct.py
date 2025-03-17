@@ -16,6 +16,7 @@ from torch_datasets.alpaca_dataset import AlpacaDataset
 from train_eval.common_training_setup import run_specific_experiment, TrainingConfig
 from utils.download_instruct_dataset import load_or_download_instruct_dataset_file
 from utils.instruction_helpers import format_input_for_alpaca, format_output_for_alpaca
+from utils.lora_wrapper import adapt_model_for_lora
 from utils.next_token_training import next_token_train_epoch, next_token_evaluate
 from utils.training_utils import custom_collate_fn
 
@@ -29,6 +30,9 @@ def train_instruct(training_config, model_config, model=None, post_fix="", test_
 
     if model is None:
         model = GPT(model_config)
+
+    if "use_lora" in training_config and training_config["use_lora"]:
+        adapt_model_for_lora(model, rank=16, alpha=16, ignore_list=["out_layer"])
 
     model.model_name = model.model_name + post_fix
 
