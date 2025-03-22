@@ -46,4 +46,4 @@ if __name__ == "__main__":
         test_data.extend(new_tests)
 
     model = train_next_token(fine_tuning_training_config, model_config, post_fix="_final")
-    train_instruct(instruct_training_config, model_config, model=model, post_fix="_instruct_lora", test_data=test_data)
+    train_instruct(instruct_training_config, model_config, model=model, post_fix="_instruct", test_data=test_data)
