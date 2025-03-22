@@ -3,13 +3,13 @@ model:
   hf_model_name: openai-community/gpt2-medium
   tokenizer: gpt2
   context_length: 1024
-  embedding_dim: 768
-  nb_layers: 12
+  embedding_dim: 1024
+  nb_layers: 24
   pad_token: -100
   token_dropout_rate: 0.1
 
   attention:
-    nb_heads: 12
+    nb_heads: 16
     dropout_rate: 0.1
     use_bias: True
     use_mask: True
