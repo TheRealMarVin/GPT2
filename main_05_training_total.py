@@ -18,9 +18,9 @@ from utils.next_token_training import next_token_train_epoch, next_token_evaluat
 
 
 if __name__ == "__main__":
-    default_model_config = "configs/gpt_124M_pre_trained.yaml"
+    default_model_config = "configs/gpt_355M_pre_trained.yaml"
     default_fine_tuning_training_config = "configs/fine_tuning_training.yaml"
-    default_instruct_training_config = "configs/instruct_training_lora.yaml"
+    default_instruct_training_config = "configs/instruct_training.yaml"
 
     parser = argparse.ArgumentParser(description="Configuration to launch training the complete model.")
     parser.add_argument("--model", type=str, default=default_model_config,
