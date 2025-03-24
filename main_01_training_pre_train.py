@@ -113,7 +113,7 @@ def train_next_token(training_config, model_config, post_fix="", experiments=[])
 
 
 if __name__ == "__main__":
-    default_model_config = "configs/gpt_124M.yaml"
+    default_model_config = "configs/gpt_355M.yaml"
     default_training_config = "configs/pre_train_training.yaml"
 
     parser = argparse.ArgumentParser(description="Configuration to launch training of the next token.")
