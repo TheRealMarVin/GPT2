@@ -142,7 +142,7 @@ def _display_sample(model, instruction, instruction_input, experiments=[]):
 
 
 if __name__ == "__main__":
-    default_model_config = "configs/gpt_124M_pre_trained.yaml"
+    default_model_config = "configs/gpt_355M_pre_trained.yaml"
     default_training_config = "configs/instruct_training.yaml"
 
     parser = argparse.ArgumentParser(description="Configuration to launch training instruction.")
