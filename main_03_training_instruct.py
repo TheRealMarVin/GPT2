@@ -60,8 +60,11 @@ def train_instruct(training_config, model_config, model=None, post_fix="", test_
             torch.save(model, save_file)
 
     summary = SummaryWriter()
-    scheduler = WarmupCosineScheduler(optimizer=optimizer, warmup_steps=10, total_steps=20,
-                                      min_lr=0.0000001, summary=summary)
+    if "use_warmup" in training_config and training_config["use_warmup"]:
+        scheduler = WarmupCosineScheduler(optimizer=optimizer, warmup_steps=10, total_steps=20,
+                                          min_lr=0.0000001, summary=summary)
+    else:
+        scheduler = None
 
     customized_collate_fn = partial(custom_collate_fn, input_padding=model.tokenizer.eos_token_id,
                                     output_ignore_index=-100)
