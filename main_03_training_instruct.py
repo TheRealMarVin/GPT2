@@ -21,7 +21,7 @@ from utils.next_token_training import next_token_train_epoch, next_token_evaluat
 from utils.training_utils import custom_collate_fn
 
 
-def train_instruct(training_config, model_config, model=None, post_fix="", test_data=[]):
+def train_instruct(training_config, model_config, model=None, post_fix="", test_data=[], out_file=None):
     print("Start Training")
 
     if "seed" in training_config:
@@ -88,9 +88,16 @@ def train_instruct(training_config, model_config, model=None, post_fix="", test_
                             eval_logic=next_token_evaluate,
                             summary=summary)
 
+    results = []
     for instruction, experiments in test_data:
         print("!!!!New Test Data!!!!")
-        _display_sample(model, instruction, "", experiments=experiments)
+        answer = _display_sample(model, instruction, "", experiments=experiments)
+        results.append((instruction, answer))
+
+    if out_file is not None:
+        with open("instruct_test_answers.txt", "w", encoding="utf-8") as out:
+            for q, a in results:
+                out.write(f"Q: {q}\nA: {a}\n{'-' * 60}\n")
 
     print("Training Done!")
     return model
@@ -125,9 +132,9 @@ def _display_sample(model, instruction, instruction_input, experiments=[]):
     entry = {"instruction": instruction, "input": instruction_input, "output": ""}
     start_context = format_input_for_alpaca(entry) + format_output_for_alpaca(entry)
 
-    out = model.generate_text(contexts=start_context, eos_id=model.tokenizer.eos_token_id, remove_context=True)
+    default_out = model.generate_text(contexts=start_context, eos_id=model.tokenizer.eos_token_id, remove_context=True)
     print("input: ", entry)
-    print("output: ", out)
+    print("output: ", default_out)
 
     for key, val, temperature in experiments:
         print("XXXX")
@@ -142,6 +149,8 @@ def _display_sample(model, instruction, instruction_input, experiments=[]):
 
         out = model.generate_text(contexts=start_context, eos_id=model.tokenizer.eos_token_id, remove_context=True)
         print(out)
+
+    return default_out
 
 
 if __name__ == "__main__":
