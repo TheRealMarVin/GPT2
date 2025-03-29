@@ -81,7 +81,7 @@ def _fine_tune_instruct():
                 f"### Response:\n"
             )
 
-        full_text = prompt + ex["output"]
+        full_text = prompt + ex["output"] + "### End"
         return {"text": full_text}
 
     formatted_dataset = dataset.map(format_example, remove_columns=dataset["train"].column_names)
@@ -152,6 +152,7 @@ def _test_on_questions():
         )[0]["generated_text"]
 
         answer = output.split("### Response:\n")[-1].strip()
+        answer.split("### End")[0].strip()
         results.append((question, answer))
 
     for q, a in results:
