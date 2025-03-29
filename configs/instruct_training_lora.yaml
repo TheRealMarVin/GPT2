@@ -2,7 +2,7 @@ seed: 42
 use_lora: True
 clip_grad_norm: True
 train_ratio: 0.9
-learning_rate: 0.0005
+learning_rate: 0.00005
 nb_epochs: 2
 batch_size: 2
 use_warmup: False
