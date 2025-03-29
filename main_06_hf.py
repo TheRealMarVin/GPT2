@@ -62,7 +62,7 @@ def _fine_tune_instruct():
 
     tokenizer.pad_token = tokenizer.eos_token
 
-    dataset = load_dataset("json", data_files={"train": "data/instruction_data.json"})
+    dataset = load_dataset("json", data_files={"train": "data/instruction-data.json"})
 
     def format_example(ex):
         if ex["input"] and len(ex["input"].strip()) > 0:
@@ -128,7 +128,7 @@ def _test_on_questions():
 
     generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
-    with open("test_questions.txt", "r", encoding="utf-8") as f:
+    with open("test_data/sherlock_questions.txt", "r", encoding="utf-8") as f:
         questions = [line.strip() for line in f if line.strip()]
 
     def build_prompt(question):
