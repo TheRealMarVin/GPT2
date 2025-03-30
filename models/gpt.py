@@ -11,13 +11,14 @@ class GPT(GPTBackBone):
     def _init_extra_modules(self, config):
         embedding_dim = config["model"]["embedding_dim"]
         self.final_norm = nn.LayerNorm(embedding_dim)
-        self.out_layer = nn.Linear(embedding_dim, self.tokenizer.vocab_size, bias=False)
+        # self.out_layer = nn.Linear(embedding_dim, self.tokenizer.vocab_size, bias=False)
 
     def forward(self, x):
         x = super().forward(x)
         x = self.final_norm(x)
 
-        return self.out_layer(x)
+        logits = torch.matmul(x, self.tokens.weight.transpose(0, 1))
+        return logits
 
     def generate_text(self, contexts, eos_id=None, remove_context=False):
         self.eval()
