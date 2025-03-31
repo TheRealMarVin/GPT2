@@ -152,13 +152,13 @@ def _test_on_questions():
         )[0]["generated_text"]
 
         answer = output.split("### Response:\n")[-1].strip()
-        answer.split("### End")[0].strip()
+        answer = answer.split("### End")[0].strip()
         results.append((question, answer))
 
     for q, a in results:
         print(f"Q: {q}\nA: {a}\n{'-' * 60}")
 
-    with open("test_answers.txt", "w", encoding="utf-8") as out:
+    with open("results/hugging_face_test_answers.txt", "w", encoding="utf-8") as out:
         for q, a in results:
             out.write(f"Q: {q}\nA: {a}\n{'-' * 60}\n")
 
