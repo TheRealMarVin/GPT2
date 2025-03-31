@@ -26,6 +26,9 @@ class GPTBackBone(nn.Module):
 
         self._init_extra_modules(config)
 
+        position_ids = torch.arange(config["model"]["context_length"]).unsqueeze(0)  # shape: (1, context_length)
+        self.register_buffer("position_ids", position_ids)
+
         if "hf_model_name" in config["model"]:
             load_weights(self, config["model"])
 
@@ -37,7 +40,8 @@ class GPTBackBone(nn.Module):
         attention_mask = x == self.pad_token
 
         x = self.tokens(x)
-        position_embeddings = self.positional_embeddings(torch.arange(seq_len, device=x.device))
+        position_ids = self.position_ids[:, :seq_len].to(x.device)
+        position_embeddings = self.positional_embeddings(position_ids)
         x = x + position_embeddings
         x = self.embedding_dropout(x)
 

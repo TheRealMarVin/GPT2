@@ -28,7 +28,7 @@ def default_evaluate(iterator, model, metrics_dict, global_metrics_dict={}, true
     for k, _ in global_metrics_dict.items():
         metric_scores[k] = 0
 
-    with torch.no_grad():
+    with torch.inference_mode():
         all_pred = []
         all_true = []
         all_src = []

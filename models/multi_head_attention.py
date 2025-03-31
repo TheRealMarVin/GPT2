@@ -21,7 +21,8 @@ class MultiHeadAttention(nn.Module):
 
         if self.use_mask:
             context_length = config["model"]["context_length"]
-            self.register_buffer("mask", torch.triu(torch.ones(context_length, context_length), diagonal=1))
+            mask = torch.triu(torch.ones(context_length, context_length), diagonal=1)
+            self.register_buffer("mask", mask.bool())
 
     def forward(self, x, attention_mask=None):
         batch, context_length, embedding_dim = x.shape
@@ -45,7 +46,7 @@ class MultiHeadAttention(nn.Module):
             attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)
 
         if self.use_mask:
-            mask_bool = self.mask.bool()[:context_length, :context_length]
+            mask_bool = self.mask[:context_length, :context_length]
             if attention_mask is not None:
                 attention_mask = mask_bool | attention_mask.bool()
             else:

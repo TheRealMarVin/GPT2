@@ -37,9 +37,9 @@ class GPT(GPTBackBone):
         temperature = self.config["model"]["sampler"].get("temperature", 0.0)
 
         for _ in range(max_length):
-            learnable_context = context_tensor[:, -self.tokenizer.vocab_size:]
+            learnable_context = context_tensor[:, -self.config["model"]["context_length"]:]
 
-            with torch.no_grad():
+            with torch.inference_mode():
                 logits = self(learnable_context)
             logits = logits[:, -1, :]
 
