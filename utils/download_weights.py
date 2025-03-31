@@ -2,11 +2,16 @@ import numpy as np
 import torch
 from transformers import GPT2Model
 
+from utils.models_helpers import compute_trainable_params
+
 
 def load_weights(gpt, config):
     gpt_hf = GPT2Model.from_pretrained(config["hf_model_name"], cache_dir="pretrained")
 
     hf_state_dict = gpt_hf.state_dict()
+
+    print("gpt:", compute_trainable_params(gpt))
+    print("gpt_hf:", compute_trainable_params(gpt_hf))
 
     # Embedding layers
     _check_and_assign(gpt.positional_embeddings.weight, hf_state_dict["wpe.weight"])
@@ -26,6 +31,9 @@ def load_weights(gpt, config):
         _update_linear_layers(hf_state_dict, block_prefix, gpt.transformers_blocks[b].linear_block)
         _update_transformer_normalization_layers(hf_state_dict, block_prefix, gpt.transformers_blocks[b])
 
+    print("gpt:", compute_trainable_params(gpt))
+    print("gpt_hf:", compute_trainable_params(gpt_hf))
+    a = 0
 
 def _update_attention(hf_state_dict, block_prefix, attention_layer, config):
     q_w, k_w, v_w = np.split(hf_state_dict[f"{block_prefix}attn.c_attn.weight"], 3, axis=-1)
