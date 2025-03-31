@@ -36,9 +36,6 @@ def train_instruct(training_config, model_config, model=None, post_fix="", test_
 
     model.model_name = model.model_name + post_fix
 
-    if "clip_grad_norm" in training_config and training_config["clip_grad_norm"]:
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
