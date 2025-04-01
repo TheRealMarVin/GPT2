@@ -29,7 +29,11 @@ def train_instruct(training_config, model_config, model=None, post_fix="", test_
         torch.manual_seed(seed)
 
     if model is None:
-        model = GPT(model_config)
+        if "load_path" in training_config and training_config["load_path"]:
+            print(f"Loading model from {training_config['load_path']}")
+            model = torch.load(training_config["load_path"])
+        else:
+            model = GPT(model_config)
 
     if "use_lora" in training_config and training_config["use_lora"]:
         adapt_model_for_lora(model, rank=16, alpha=16, ignore_list=["out_layer"])
@@ -92,11 +96,45 @@ def train_instruct(training_config, model_config, model=None, post_fix="", test_
         results.append((instruction, answer))
 
     if out_file is not None:
-        with open("instruct_test_answers.txt", "w", encoding="utf-8") as out:
+        with open("results/instruct_test_answers.txt", "w", encoding="utf-8") as out:
             for q, a in results:
                 out.write(f"Q: {q}\nA: {a}\n{'-' * 60}\n")
 
     print("Training Done!")
+    return model
+
+def test_model(training_config, model_config, model=None, test_data=[], out_file=None):
+    print("Start Testing")
+
+    if "seed" in training_config:
+        seed = training_config["seed"]
+        torch.manual_seed(seed)
+
+    if model is None:
+        if "load_path" in training_config and training_config["load_path"]:
+            print(f"Loading model from {training_config['load_path']}")
+            model = torch.load(training_config["load_path"])
+        else:
+            model = GPT(model_config)
+
+    if "use_lora" in training_config and training_config["use_lora"]:
+        adapt_model_for_lora(model, rank=16, alpha=16, ignore_list=["out_layer"])
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
+    results = []
+    for instruction, experiments in test_data:
+        print("!!!!New Test Data!!!!")
+        answer = _display_sample(model, instruction, "", experiments=experiments)
+        results.append((instruction, answer))
+
+    if out_file is not None:
+        with open("results/instruct_test_answers.txt", "w", encoding="utf-8") as out:
+            for q, a in results:
+                out.write(f"Q: {q}\nA: {a}\n{'-' * 60}\n")
+
+    print("Testing Done!")
     return model
 
 def _create_alpaca_datasets(file_path, model, max_context_length=1024):
