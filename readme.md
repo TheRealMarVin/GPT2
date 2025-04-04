@@ -1,6 +1,6 @@
 # 🕵️‍♂️ Welcome to the GPT Exploration Extravaganza! 🕵️‍♂️
 
-## Description
+## 🧾 Description
 
 It's 2025, and yeah… maybe it's about time I took a serious look at these GPT models everyone’s been raving about since forever. This project is my attempt to demystify the black box and understand how large language models (LLMs) really work—especially that big ol’ leap where they go from 'pretrained' to 'actually useful for a task.'
 
@@ -8,7 +8,7 @@ In true stubborn fashion, I decided to build and align one myself before checkin
 
 The goal? See if I can get a model to learn how to answer questions about the world of Sherlock Holmes—solving mysteries, referencing obscure plot points, and navigating the foggy streets of Victorian London with proper deductive flair. Let’s just say: elementary, it is not.
 
-## Install
+## 💾 Install
 
 Installing this project is easier than understanding quantum physics (or GPT internals, for that matter). Just follow these simple steps:
 
@@ -34,7 +34,7 @@ Installing this project is easier than understanding quantum physics (or GPT int
 
 > 💡 Python 3.11+ is recommended. Older versions might make Sherlock frown in disapproval.
 
-## Running
+## 🚀 Running
 
 Each `main_XX.py` file is a standalone experiment and can be run directly with:
 
@@ -60,6 +60,43 @@ Here's what each file does:
 
 Run them, tweak them, break them—have fun!
 
+## 🧠 What I Learned
+
+Let’s be real: training a model from scratch is like teaching a goldfish quantum mechanics. It *technically* works… but don’t expect miracles.
+
+Still, I learned a ton:
+
+- **Fine-tuning helps, but isn't magic**: You get better outputs, but just dumping Sherlock into a model doesn't mean it becomes Sherlock.
+- **Instruction tuning is key**: Without it, your model rambles like a Victorian drunk at the pub. With it, it starts answering questions like a gentleman (well, mostly).
+- **Hugging Face is OP**: Their training pipeline is fast, smart, and optimized. Their default settings alone gave better results than hours of my tweaking. I fought the Hugging Face, and… well, you know.
+
+## 🔍 Holmesian Benchmarks
+
+After all this fine-tuning and instruction-injection, I had one question: *Can my model answer questions about the world of Sherlock Holmes?*
+
+Turns out… sort of! Some gems:
+
+> **Q:** What is Sherlock’s method of solving crimes?\
+> **A:** Deduction. (👏 nailed it)
+
+> **Q:** Who is Holmes’ brother?\
+> **A:** Mycroft Holmes. (Respect)
+
+And some… less impressive:
+
+> **Q:** Where does Sherlock live?\
+> **A:** Chinatown, Boston, MA. (Wait, what?)
+
+So yeah—it gets the vibe, but occasionally hallucinates like it's been sniffing too much pipe smoke.
+
+## 🔮 What’s Next?
+
+The journey doesn’t stop here! Coming soon (maybe):
+
+- 🧪 Better LoRA integration (maybe QLoRA or other spicy variants)
+- 🛠️ Custom Sherlock dataset v2 — with more balanced questions and actual EOS tokens
+- 🤝 RLHF-style alignment (because nothing says “fun project” like building your own reward model)
+- 📖 Maybe a blog post or paper summarizing this journey?
 
 
 
