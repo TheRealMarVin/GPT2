@@ -36,5 +36,30 @@ Installing this project is easier than understanding quantum physics (or GPT int
 
 ## Running
 
-Write something
+Each `main_XX.py` file is a standalone experiment and can be run directly with:
+
+```bash
+python main_XX.py
+```
+
+All scripts have sensible default arguments, so you can just hit run and see what happens. Of course, you can override configs via command-line arguments if you're feeling spicy.
+
+Here's what each file does:
+
+- **main\_01.py** – Train a GPT model entirely from scratch. No shortcuts, no pretraining, just raw tokens and optimism.
+
+- **main\_02.py** – Fine-tune a pretrained model on your dataset. Much faster, and the results are surprisingly good.
+
+- **main\_03.py** – Fine-tune the same model with instruction-style prompts, because while main\_02 works, it doesn’t really *answer* questions yet. This is where we teach it some manners.
+
+- **main\_04.py** – Experimental attempt to use LoRA for fine-tuning. Results are... underwhelming so far. Still a work in progress. 🛠️
+
+- **main\_05.py** – Fine-tune a pretrained model on the Sherlock Holmes dataset, then fine-tune again on the Alpaca instruction dataset. A bit of crime-solving meets prompt-following.
+
+- **main\_06.py** – Same as main\_05, but done with Hugging Face’s training framework. Spoiler: they make it look easy.
+
+Run them, tweak them, break them—have fun!
+
+
+
 
