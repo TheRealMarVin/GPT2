@@ -1,0 +1,16 @@
+# Core dependencies
+transformers==4.38.2
+datasets==2.18.0
+tokenizers==0.15.1
+
+# Training & Evaluation
+accelerate==0.27.2
+scikit-learn>=1.3.0
+
+# Utilities
+tqdm>=4.66.0
+numpy>=1.24.0
+pandas>=2.1.0
+
+# Optional: for logging/tracking
+matplotlib>=3.7.0
