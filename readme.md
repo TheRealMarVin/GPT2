@@ -10,27 +10,31 @@ The goal? See if I can get a model to learn how to answer questions about the wo
 
 ## Install
 
-Installing this project is easier than understanding quantum physics (or GPT, for that matter). Just follow these simple steps:
+Installing this project is easier than understanding quantum physics (or GPT internals, for that matter). Just follow these simple steps:
 
-1. Clone the repo: 
+1. Clone the repo from the depths of GitHub:
 
-    ```bash
-    git clone https://github.com/TheRealMarVin/gp2.git
-    ```
-    
-2. Navigate to the project directory: 
+   ```bash
+   git clone https://github.com/TheRealMarVin/gpt2.git
+   ```
 
-    ```bash
-    cd gpt2
-    ```
-    
-3. Install the necessary dependencies (pro tip: use a virtual environment so you don't accidentally break the space-time continuum):
+2. Enter the lair:
 
-    ```bash
-    pip install -r requirements.txt
-    ```
-   You will also need to install the latest PyTorch version
+   ```bash
+   cd gpt2
+   ```
+
+3. Install the required Python packages (pro tip: use a virtual environment to keep your machine from exploding):
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Install the latest version of PyTorch separately (with or without CUDA, depending on your machine). Check it out at: [https://pytorch.org/get-started/locally/](https://pytorch.org/get-started/locally/)
+
+> 💡 Python 3.11+ is recommended. Older versions might make Sherlock frown in disapproval.
 
 ## Running
 
 Write something
+
