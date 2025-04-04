@@ -1,8 +1,12 @@
-# 😂 Welcome to the GPT Exploration Extravaganza! 😂
+# 🕵️‍♂️ Welcome to the GPT Exploration Extravaganza! 🕵️‍♂️
 
 ## Description
 
-Welcome to the wild world of GPT exploration, where we dive into the fascinating (and slightly confusing) universe of generative pre-trained transformers (yes this is the name under GPT)! 
+It's 2025, and yeah… maybe it's about time I took a serious look at these GPT models everyone’s been raving about since forever. This project is my attempt to demystify the black box and understand how large language models (LLMs) really work—especially that big ol’ leap where they go from 'pretrained' to 'actually useful for a task.'
+
+In true stubborn fashion, I decided to build and align one myself before checking how the pros do it. Spoiler alert: Hugging Face crushed it. If this were a song, it’d be "I fought the law, and the law won."
+
+The goal? See if I can get a model to learn how to answer questions about the world of Sherlock Holmes—solving mysteries, referencing obscure plot points, and navigating the foggy streets of Victorian London with proper deductive flair. Let’s just say: elementary, it is not.
 
 ## Install
 
