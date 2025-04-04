@@ -31,9 +31,6 @@ def train_next_token(training_config, model_config, post_fix="", experiments=[])
     if "use_lora" in training_config and training_config["use_lora"]:
         adapt_model_for_lora(model, rank=16, alpha=16, ignore_list=["out_layer"])
 
-    if "clip_grad_norm" in training_config and training_config["clip_grad_norm"]:
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
