@@ -44,7 +44,7 @@ def download_sherlock_dataset(out_folder, out_name, override_files=False):
             full_content = "\n".join(data)
             file.write(full_content)
 
-        return filename
+    return filename
 
 if __name__ == "__main__":
     download_sherlock_dataset("data", "test.txt")
